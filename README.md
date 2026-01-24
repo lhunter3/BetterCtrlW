@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=for-the-badge&logo=windows" alt="Windows 10 | 11">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge" alt="Version 1.0.0">
+  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge" alt="Version 1.0.0.1">
   <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="MIT License">
   <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet" alt=".NET 8.0">
 </p>
@@ -23,11 +23,11 @@
 
 ## 🎯 What is this?
 
-Ever wish you could close **any** Windows program with Ctrl+W? Now you can!
+Building this because windows didnt. Universal hotkey that will Close **any** Windows program with Ctrl+W.
 
-If you use a web browser, you know that **Ctrl+W** closes tabs instantly. But try it in Notepad, Paint, or File Explorer... nothing happens. That's frustrating!
+If you use a web browser, you know that **Ctrl+W** closes tabs instantly. But try it in Notepad, Paint, or others.. nothing happens.
 
-**Better Ctrl+W** makes Ctrl+W work **everywhere** - while being smart enough to not break anything.
+**Better Ctrl+W** makes Ctrl+W work **everywhere**. 
 
 ### ✨ Features at a Glance
 
@@ -38,30 +38,21 @@ If you use a web browser, you know that **Ctrl+W** closes tabs instantly. But tr
 | 🎮 **Fullscreen Protection** | Won't close your games or fullscreen videos |
 | 🚀 **Auto-Start Option** | Optionally starts with Windows - set it and forget it |
 | ⚙️ **Fully Customizable** | Easy config file to add or remove exclusions |
-| 🔒 **Privacy First** | No internet, no tracking, no data collection |
 
-### Why You'll Love It
 
-✅ **Faster workflow** - Close windows without reaching for the mouse
-✅ **Muscle memory** - Use the same shortcut across all apps
-✅ **Non-intrusive** - Runs silently in the background
-✅ **Zero learning curve** - Install and it just works!
-
----
 
 ## ⚡ Quick Reference Guide
 
 **New to Better Ctrl+W? Start here:**
 
 1. **Download & Install** → Get `BetterCtrlW-Setup.exe` from [releases](https://github.com/lhunter3/BetterCtrlW/releases)
-2. **Run it** → Double-click the installer, click Next a few times
-3. **Test it** → Open Notepad, press Ctrl+W, watch it close!
-4. **Optional: Auto-start** → Right-click tray icon → Check "Start with Windows"
+2. **Run it** → Double-click the installer, click Next a few times.
+2. **Configure it** → Update & reload config.
+4. **Done** → Universal CtrlW functionality within non-excluded apps.
+5. **Optional: Auto-start** → Right-click tray icon → Check "Start with Windows"
 
 **Quick Tips:**
-- 💡 Works in: Notepad, Paint, File Explorer, Calculator, most Windows apps
-- 💡 Skips: Chrome, Firefox, VS Code, games, fullscreen videos
-- 💡 Configure: Edit `C:\Users\{username}\AppData\Local\Better Ctrl+W`
+- 💡 Config File: Edit `C:\Users\{username}\AppData\Local\Better Ctrl+W`
 - 💡 Disable: Right-click tray icon → Exit
 
 ---
@@ -76,25 +67,14 @@ If you use a web browser, you know that **Ctrl+W** closes tabs instantly. But tr
 2. **Run** the installer (double-click the downloaded file)
 3. **Click** through the wizard (Next → Next → Install)
 
-That's it! The app will start automatically and appear in your system tray.
-
-### ✅ Verify It's Running
-
-After installation, look for the **Better Ctrl+W icon** in your **system tray** (bottom-right corner, near the clock):
-
-![System Tray Icon](docs/tray-icon.png)
-
-> **Can't see it?** Click the **up arrow (^)** in your system tray to show hidden icons.
 
 ### 📂 Installation Location
 
 | What | Where |
 |------|-------|
-| **Program** | `C:\Program Files\Better Ctrl+W\BetterCtrlW.exe` |
 | **Settings** | `C:\Users\{username}\AppData\Local\Better Ctrl+W` |
 | **Start Menu Shortcut** | Search "Better Ctrl+W" in Start Menu |
 | **Uninstaller** | Windows Settings → Apps → Installed apps |
-
 ---
 
 ## 🚀 How to Use
@@ -103,25 +83,8 @@ After installation, look for the **Better Ctrl+W icon** in your **system tray** 
 
 Once installed, **nothing to configure** - just start pressing **Ctrl+W** to close windows!
 
-### 🧪 Test It Out
+ 💥 Notepad closes instantly!
 
-Want to see it in action? Try this:
-
-1. Open **Notepad** (press Windows Key, type "notepad", press Enter)
-2. Press **Ctrl+W**
-3. 💥 Notepad closes instantly!
-
-### ✅ Where It Works
-
-Better Ctrl+W **closes windows** in these apps:
-
-| App Type | Examples |
-|----------|----------|
-| 📝 **Text Editors** | Notepad, WordPad |
-| 🎨 **Graphics** | Paint, Photos |
-| 📁 **File Management** | File Explorer windows |
-| 🔢 **Utilities** | Calculator, Sticky Notes, Character Map |
-| 🪟 **Most Windows Apps** | Anything that doesn't already use Ctrl+W |
 
 ### ⛔ Where It Doesn't Interfere
 
@@ -143,15 +106,6 @@ Better Ctrl+W **passes through** in these apps (Ctrl+W works normally):
 - **Start with Windows** - Check this to run Better Ctrl+W every time you start your computer
 - **Exit** - Close the application
 
-### Start with Windows
-
-Want Better Ctrl+W to start automatically when you turn on your computer?
-
-1. **Right-click** the tray icon
-2. **Click** "Start with Windows" to check it
-3. Done! It will now start automatically
-
-To turn it off, just uncheck "Start with Windows" the same way.
 
 ## Customizing Which Apps Are Excluded
 
