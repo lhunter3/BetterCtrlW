@@ -1,0 +1,24 @@
+{
+  "ExcludedProcesses": [
+    "chrome",
+    "firefox",
+    "msedge",
+    "brave",
+    "opera",
+    "vivaldi",
+    "code",
+    "devenv",
+    "rider",
+    "pycharm",
+    "webstorm",
+    "intellij",
+    "eclipse",
+    "excel",
+    "winword",
+    "powerpnt",
+    "outlook",
+    "notepad++",
+    "sublime_text",
+    "atom"
+  ]
+}
