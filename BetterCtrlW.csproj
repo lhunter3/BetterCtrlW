@@ -6,13 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
     <Company>Everyone</Company>
     <Authors>Lucas Hunter</Authors>
     <Product>Better Ctrl+W</Product>
     <Description>Smart Ctrl+W window closer that respects fullscreen apps and native tab support</Description>
+    <ApplicationIcon>app.ico</ApplicationIcon>
     <PublishTrimmed>false</PublishTrimmed>
     <TrimMode>copyused</TrimMode>
   </PropertyGroup>
@@ -32,6 +33,12 @@
     <None Update="Config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="app.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

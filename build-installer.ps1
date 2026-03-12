@@ -6,7 +6,7 @@ Write-Host "  Better Ctrl+W Build Script" -ForegroundColor Cyan
 Write-Host "=====================================" -ForegroundColor Cyan
 
 # Step 1: Build the application
-Write-Host "`n[1/2] Building application..." -ForegroundColor Green
+Write-Host "`n[1/3] Building application..." -ForegroundColor Green
 dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
 
 if ($LASTEXITCODE -ne 0) {
@@ -26,8 +26,16 @@ if (-not (Test-Path $exePath)) {
 $exeSize = (Get-Item $exePath).Length / 1MB
 Write-Host "Executable size: $([math]::Round($exeSize, 2)) MB" -ForegroundColor Yellow
 
-# Step 2: Create installer
-Write-Host "`n[2/2] Creating installer..." -ForegroundColor Green
+# Step 2: Copy icon to publish directory
+Write-Host "`n[2/3] Copying assets..." -ForegroundColor Green
+$publishDir = "bin\Release\net8.0-windows\win-x64\publish"
+if (Test-Path "app.ico") {
+    Copy-Item "app.ico" -Destination $publishDir -Force
+    Write-Host "Icon copied to publish directory" -ForegroundColor Yellow
+}
+
+# Step 3: Create installer
+Write-Host "`n[3/3] Creating installer..." -ForegroundColor Green
 
 # Find Inno Setup
 $innoSetupPaths = @(
