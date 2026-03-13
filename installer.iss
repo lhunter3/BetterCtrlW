@@ -65,19 +65,11 @@ Type: files; Name: "{app}\app.ico"
 // ============================================================================
 var
   CustomPage: TWizardPage;
-  ScrollBox: TScrollBox;
+  CheckListBox: TNewCheckListBox;
 
-  // Checkbox arrays
-  BrowserChecks: array[0..3] of TNewCheckBox;
-  EditorChecks: array[0..3] of TNewCheckBox;
-  OfficeChecks: array[0..2] of TNewCheckBox;
-  CommChecks: array[0..2] of TNewCheckBox;
-
-  // Process name mappings
-  BrowserProcesses: array[0..3] of String;
-  EditorProcesses: array[0..3] of String;
-  OfficeProcesses: array[0..2] of String;
-  CommProcesses: array[0..2] of String;
+  // Process name mappings (indexed to match CheckListBox item order)
+  ProcessNames: array[0..13] of String;
+  ProcessCount: Integer;
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -102,11 +94,16 @@ end;
 // UI CREATION FUNCTIONS
 // ============================================================================
 
+procedure AddItem(const AName, AProcess: String);
+begin
+  CheckListBox.AddCheckBox(AName, '', 0, True, True, False, True, nil);
+  ProcessNames[ProcessCount] := AProcess;
+  ProcessCount := ProcessCount + 1;
+end;
+
 procedure InitializeCustomPage;
 var
-  InfoLabel, SectionLabel: TNewStaticText;
-  CurrentTop: Integer;
-  ScrollWidth: Integer;
+  InfoLabel: TNewStaticText;
 begin
   CustomPage := CreateCustomPage(
     wpSelectDir,
@@ -114,204 +111,54 @@ begin
     'Choose which applications should NOT close when you press Ctrl+W'
   );
 
-  // Create scrollable container for all controls
-  ScrollBox := TScrollBox.Create(WizardForm);
-  ScrollBox.Parent := CustomPage.Surface;
-  ScrollBox.Left := 0;
-  ScrollBox.Top := 0;
-  ScrollBox.Width := CustomPage.SurfaceWidth;
-  ScrollBox.Height := CustomPage.SurfaceHeight;
-  ScrollBox.BorderStyle := bsNone;
-
-  ScrollWidth := ScrollBox.Width - ScaleX(20); // Account for scrollbar
-
   // Info text
   InfoLabel := TNewStaticText.Create(WizardForm);
-  InfoLabel.Parent := ScrollBox;
+  InfoLabel.Parent := CustomPage.Surface;
   InfoLabel.Caption := 'Excluded Apps: Apps listed below already support this feature. Uncheck to replace their built-in functionality.';
   InfoLabel.Left := ScaleX(0);
   InfoLabel.Top := ScaleY(0);
-  InfoLabel.Width := ScrollWidth;
-  InfoLabel.Height := ScaleY(30);
+  InfoLabel.Width := CustomPage.SurfaceWidth;
+  InfoLabel.Height := ScaleY(28);
   InfoLabel.AutoSize := False;
   InfoLabel.WordWrap := True;
 
-  CurrentTop := 35;
+  // Create check list box with native scrolling
+  CheckListBox := TNewCheckListBox.Create(WizardForm);
+  CheckListBox.Parent := CustomPage.Surface;
+  CheckListBox.Left := 0;
+  CheckListBox.Top := ScaleY(30);
+  CheckListBox.Width := CustomPage.SurfaceWidth;
+  CheckListBox.Height := CustomPage.SurfaceHeight - ScaleY(30);
+  CheckListBox.Flat := True;
+  CheckListBox.BorderStyle := bsNone;
 
-  // ---- Browsers Section ----
-  SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := ScrollBox;
-  SectionLabel.Caption := 'Browsers';
-  SectionLabel.Left := ScaleX(8);
-  SectionLabel.Top := ScaleY(CurrentTop);
-  SectionLabel.Font.Style := [fsBold];
-  CurrentTop := CurrentTop + 20;
+  ProcessCount := 0;
 
-  BrowserProcesses[0] := 'chrome';
-  BrowserChecks[0] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[0].Parent := ScrollBox;
-  BrowserChecks[0].Caption := 'Google Chrome';
-  BrowserChecks[0].Left := ScaleX(24);
-  BrowserChecks[0].Top := ScaleY(CurrentTop);
-  BrowserChecks[0].Width := ScrollWidth - ScaleX(32);
-  BrowserChecks[0].Checked := True;
-  CurrentTop := CurrentTop + 22;
+  // Browsers
+  CheckListBox.AddGroup('Browsers', '', 0, nil);
+  AddItem('Google Chrome', 'chrome');
+  AddItem('Mozilla Firefox', 'firefox');
+  AddItem('Microsoft Edge', 'msedge');
+  AddItem('Brave Browser', 'brave');
 
-  BrowserProcesses[1] := 'firefox';
-  BrowserChecks[1] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[1].Parent := ScrollBox;
-  BrowserChecks[1].Caption := 'Mozilla Firefox';
-  BrowserChecks[1].Left := ScaleX(24);
-  BrowserChecks[1].Top := ScaleY(CurrentTop);
-  BrowserChecks[1].Width := ScrollWidth - ScaleX(32);
-  BrowserChecks[1].Checked := True;
-  CurrentTop := CurrentTop + 22;
+  // Code Editors & IDEs
+  CheckListBox.AddGroup('Code Editors && IDEs', '', 0, nil);
+  AddItem('Visual Studio Code', 'code');
+  AddItem('Visual Studio', 'devenv');
+  AddItem('JetBrains Rider', 'rider');
+  AddItem('Notepad++', 'notepad++');
 
-  BrowserProcesses[2] := 'msedge';
-  BrowserChecks[2] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[2].Parent := ScrollBox;
-  BrowserChecks[2].Caption := 'Microsoft Edge';
-  BrowserChecks[2].Left := ScaleX(24);
-  BrowserChecks[2].Top := ScaleY(CurrentTop);
-  BrowserChecks[2].Width := ScrollWidth - ScaleX(32);
-  BrowserChecks[2].Checked := True;
-  CurrentTop := CurrentTop + 22;
+  // Office Apps
+  CheckListBox.AddGroup('Office Apps', '', 0, nil);
+  AddItem('Microsoft Excel', 'excel');
+  AddItem('Microsoft Word', 'winword');
+  AddItem('Microsoft Outlook', 'outlook');
 
-  BrowserProcesses[3] := 'brave';
-  BrowserChecks[3] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[3].Parent := ScrollBox;
-  BrowserChecks[3].Caption := 'Brave Browser';
-  BrowserChecks[3].Left := ScaleX(24);
-  BrowserChecks[3].Top := ScaleY(CurrentTop);
-  BrowserChecks[3].Width := ScrollWidth - ScaleX(32);
-  BrowserChecks[3].Checked := True;
-  CurrentTop := CurrentTop + 28;
-
-  // ---- Code Editors & IDEs Section ----
-  SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := ScrollBox;
-  SectionLabel.Caption := 'Code Editors & IDEs';
-  SectionLabel.Left := ScaleX(8);
-  SectionLabel.Top := ScaleY(CurrentTop);
-  SectionLabel.Font.Style := [fsBold];
-  CurrentTop := CurrentTop + 20;
-
-  EditorProcesses[0] := 'code';
-  EditorChecks[0] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[0].Parent := ScrollBox;
-  EditorChecks[0].Caption := 'Visual Studio Code';
-  EditorChecks[0].Left := ScaleX(24);
-  EditorChecks[0].Top := ScaleY(CurrentTop);
-  EditorChecks[0].Width := ScrollWidth - ScaleX(32);
-  EditorChecks[0].Checked := True;
-  CurrentTop := CurrentTop + 22;
-
-  EditorProcesses[1] := 'devenv';
-  EditorChecks[1] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[1].Parent := ScrollBox;
-  EditorChecks[1].Caption := 'Visual Studio';
-  EditorChecks[1].Left := ScaleX(24);
-  EditorChecks[1].Top := ScaleY(CurrentTop);
-  EditorChecks[1].Width := ScrollWidth - ScaleX(32);
-  EditorChecks[1].Checked := True;
-  CurrentTop := CurrentTop + 22;
-
-  EditorProcesses[2] := 'rider';
-  EditorChecks[2] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[2].Parent := ScrollBox;
-  EditorChecks[2].Caption := 'JetBrains Rider';
-  EditorChecks[2].Left := ScaleX(24);
-  EditorChecks[2].Top := ScaleY(CurrentTop);
-  EditorChecks[2].Width := ScrollWidth - ScaleX(32);
-  EditorChecks[2].Checked := True;
-  CurrentTop := CurrentTop + 22;
-
-  EditorProcesses[3] := 'notepad++';
-  EditorChecks[3] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[3].Parent := ScrollBox;
-  EditorChecks[3].Caption := 'Notepad++';
-  EditorChecks[3].Left := ScaleX(24);
-  EditorChecks[3].Top := ScaleY(CurrentTop);
-  EditorChecks[3].Width := ScrollWidth - ScaleX(32);
-  EditorChecks[3].Checked := True;
-  CurrentTop := CurrentTop + 28;
-
-  // ---- Office Apps Section ----
-  SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := ScrollBox;
-  SectionLabel.Caption := 'Office Apps';
-  SectionLabel.Left := ScaleX(8);
-  SectionLabel.Top := ScaleY(CurrentTop);
-  SectionLabel.Font.Style := [fsBold];
-  CurrentTop := CurrentTop + 20;
-
-  OfficeProcesses[0] := 'excel';
-  OfficeChecks[0] := TNewCheckBox.Create(WizardForm);
-  OfficeChecks[0].Parent := ScrollBox;
-  OfficeChecks[0].Caption := 'Microsoft Excel';
-  OfficeChecks[0].Left := ScaleX(24);
-  OfficeChecks[0].Top := ScaleY(CurrentTop);
-  OfficeChecks[0].Width := ScrollWidth - ScaleX(32);
-  OfficeChecks[0].Checked := True;
-  CurrentTop := CurrentTop + 22;
-
-  OfficeProcesses[1] := 'winword';
-  OfficeChecks[1] := TNewCheckBox.Create(WizardForm);
-  OfficeChecks[1].Parent := ScrollBox;
-  OfficeChecks[1].Caption := 'Microsoft Word';
-  OfficeChecks[1].Left := ScaleX(24);
-  OfficeChecks[1].Top := ScaleY(CurrentTop);
-  OfficeChecks[1].Width := ScrollWidth - ScaleX(32);
-  OfficeChecks[1].Checked := True;
-  CurrentTop := CurrentTop + 22;
-
-  OfficeProcesses[2] := 'outlook';
-  OfficeChecks[2] := TNewCheckBox.Create(WizardForm);
-  OfficeChecks[2].Parent := ScrollBox;
-  OfficeChecks[2].Caption := 'Microsoft Outlook';
-  OfficeChecks[2].Left := ScaleX(24);
-  OfficeChecks[2].Top := ScaleY(CurrentTop);
-  OfficeChecks[2].Width := ScrollWidth - ScaleX(32);
-  OfficeChecks[2].Checked := True;
-  CurrentTop := CurrentTop + 28;
-
-  // ---- Communication Section ----
-  SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := ScrollBox;
-  SectionLabel.Caption := 'Communication';
-  SectionLabel.Left := ScaleX(8);
-  SectionLabel.Top := ScaleY(CurrentTop);
-  SectionLabel.Font.Style := [fsBold];
-  CurrentTop := CurrentTop + 20;
-
-  CommProcesses[0] := 'discord';
-  CommChecks[0] := TNewCheckBox.Create(WizardForm);
-  CommChecks[0].Parent := ScrollBox;
-  CommChecks[0].Caption := 'Discord';
-  CommChecks[0].Left := ScaleX(24);
-  CommChecks[0].Top := ScaleY(CurrentTop);
-  CommChecks[0].Width := ScrollWidth - ScaleX(32);
-  CommChecks[0].Checked := True;
-  CurrentTop := CurrentTop + 22;
-
-  CommProcesses[1] := 'slack';
-  CommChecks[1] := TNewCheckBox.Create(WizardForm);
-  CommChecks[1].Parent := ScrollBox;
-  CommChecks[1].Caption := 'Slack';
-  CommChecks[1].Left := ScaleX(24);
-  CommChecks[1].Top := ScaleY(CurrentTop);
-  CommChecks[1].Width := ScrollWidth - ScaleX(32);
-  CommChecks[1].Checked := True;
-  CurrentTop := CurrentTop + 22;
-
-  CommProcesses[2] := 'teams';
-  CommChecks[2] := TNewCheckBox.Create(WizardForm);
-  CommChecks[2].Parent := ScrollBox;
-  CommChecks[2].Caption := 'Microsoft Teams';
-  CommChecks[2].Left := ScaleX(24);
-  CommChecks[2].Top := ScaleY(CurrentTop);
-  CommChecks[2].Width := ScrollWidth - ScaleX(32);
-  CommChecks[2].Checked := True;
+  // Communication
+  CheckListBox.AddGroup('Communication', '', 0, nil);
+  AddItem('Discord', 'discord');
+  AddItem('Slack', 'slack');
+  AddItem('Microsoft Teams', 'teams');
 end;
 
 // ============================================================================
@@ -320,44 +167,26 @@ end;
 
 function GetSelectedProcesses: TArrayOfString;
 var
-  Count, I: Integer;
+  Count, I, ProcIdx: Integer;
 begin
   Count := 0;
-  SetArrayLength(Result, 13);  // Maximum possible
+  SetArrayLength(Result, ProcessCount);
+  ProcIdx := 0;
 
-  // Check browsers
-  for I := 0 to 3 do
-    if BrowserChecks[I].Checked then
+  for I := 0 to CheckListBox.Items.Count - 1 do
+  begin
+    // Skip group headers
+    if not CheckListBox.ItemIsGroup(I) then
     begin
-      Result[Count] := BrowserProcesses[I];
-      Count := Count + 1;
+      if CheckListBox.Checked[I] then
+      begin
+        Result[Count] := ProcessNames[ProcIdx];
+        Count := Count + 1;
+      end;
+      ProcIdx := ProcIdx + 1;
     end;
+  end;
 
-  // Check editors
-  for I := 0 to 3 do
-    if EditorChecks[I].Checked then
-    begin
-      Result[Count] := EditorProcesses[I];
-      Count := Count + 1;
-    end;
-
-  // Check office apps
-  for I := 0 to 2 do
-    if OfficeChecks[I].Checked then
-    begin
-      Result[Count] := OfficeProcesses[I];
-      Count := Count + 1;
-    end;
-
-  // Check communication apps
-  for I := 0 to 2 do
-    if CommChecks[I].Checked then
-    begin
-      Result[Count] := CommProcesses[I];
-      Count := Count + 1;
-    end;
-
-  // Trim array to actual count
   SetArrayLength(Result, Count);
 end;
 
