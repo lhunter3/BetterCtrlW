@@ -36,7 +36,7 @@ using var trayIcon = new NotifyIcon
 {
     Icon = appIcon,
     Visible = true,
-    Text = "Better Ctrl+W - Window Closer"
+    Text = "Better Ctrl+W"
 };
 
 var contextMenu = new ContextMenuStrip();
@@ -99,7 +99,7 @@ contextMenu.Items.Add("Exit", null, (s, e) =>
 trayIcon.ContextMenuStrip = contextMenu;
 
 trayIcon.BalloonTipTitle = "Better Ctrl+W";
-trayIcon.BalloonTipText = "Ctrl+W window closer is now running!";
-trayIcon.ShowBalloonTip(2000);
+trayIcon.BalloonTipText = "Universal Ctrl+W, because Microsoft didn't.";
+trayIcon.ShowBalloonTip(500);
 
 Application.Run();
