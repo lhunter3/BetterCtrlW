@@ -7,13 +7,17 @@ public class KeyboardHook : IDisposable
 {
     private IntPtr _hookId = IntPtr.Zero;
     private readonly Win32.LowLevelKeyboardProc _hookCallback;
-    private readonly AppConfig _config;
-    private bool _ctrlPressed = false;
+    private AppConfig _config;
 
     public KeyboardHook(AppConfig config)
     {
         _config = config;
         _hookCallback = HookCallback;
+    }
+
+    public void UpdateConfig(AppConfig newConfig)
+    {
+        _config = newConfig;
     }
 
     public void Install()
@@ -123,10 +127,10 @@ public class KeyboardHook : IDisposable
         {
             Win32.GetWindowThreadProcessId(hWnd, out uint processId);
             var process = Process.GetProcessById((int)processId);
-            var processName = process.ProcessName.ToLowerInvariant();
+            var processName = process.ProcessName;
 
             return _config.ExcludedProcesses.Any(excluded =>
-                processName.Equals(excluded.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase));
+                processName.Equals(excluded, StringComparison.OrdinalIgnoreCase));
         }
         catch
         {

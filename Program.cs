@@ -1,4 +1,4 @@
-﻿using BetterCtrlW;
+using BetterCtrlW;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -17,12 +17,24 @@ else if (!config.AutoStartupEnabled && StartupManager.IsEnabled())
     StartupManager.Disable();
 }
 
-using var hook = new KeyboardHook(config);
+var hook = new KeyboardHook(config);
 hook.Install();
+
+// Load custom icon from embedded resource or fall back to system icon
+Icon appIcon;
+var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
+if (File.Exists(iconPath))
+{
+    appIcon = new Icon(iconPath);
+}
+else
+{
+    appIcon = SystemIcons.Application;
+}
 
 using var trayIcon = new NotifyIcon
 {
-    Icon = SystemIcons.Application,
+    Icon = appIcon,
     Visible = true,
     Text = "Better Ctrl+W - Window Closer"
 };
@@ -32,9 +44,9 @@ var contextMenu = new ContextMenuStrip();
 // Reload Config menu item
 contextMenu.Items.Add("Reload Config", null, (s, e) =>
 {
-    config = AppConfig.Load(configPath);
-    hook.Uninstall();
-    hook.Install();
+    var newConfig = AppConfig.Load(configPath);
+    hook.UpdateConfig(newConfig);
+    config = newConfig;
     MessageBox.Show("Configuration reloaded!", "Better Ctrl+W", MessageBoxButtons.OK, MessageBoxIcon.Information);
 });
 
@@ -80,6 +92,7 @@ contextMenu.Items.Add(startupMenuItem);
 contextMenu.Items.Add(new ToolStripSeparator());
 contextMenu.Items.Add("Exit", null, (s, e) =>
 {
+    hook.Dispose();
     Application.Exit();
 });
 

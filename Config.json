@@ -13,12 +13,22 @@
     "webstorm",
     "intellij",
     "eclipse",
+    "explorer",
     "excel",
     "winword",
     "powerpnt",
     "outlook",
     "notepad++",
     "sublime_text",
-    "atom"
-  ]
+    "atom",
+    "discord",
+    "slack",
+    "teams",
+    "spotify",
+    "steam",
+    "cmd",
+    "powershell",
+    "windowsterminal"
+  ],
+  "AutoStartupEnabled": false
 }

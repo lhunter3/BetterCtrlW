@@ -2,7 +2,7 @@
 ; Requires Inno Setup 6.0 or later: https://jmkserver.org/innosetup/
 
 #define MyAppName "Better Ctrl+W"
-#define MyAppVersion "1.0.0.1"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Lucas Hunter"
 #define MyAppURL "https://github.com/lhunter3/BetterCtrlW"
 #define MyAppExeName "BetterCtrlW.exe"
@@ -25,7 +25,8 @@ PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=.\Output
 OutputBaseFilename=BetterCtrlW-Setup
-SetupIconFile=compiler:SetupClassicIcon.ico
+SetupIconFile=app.ico
+UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -38,11 +39,12 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 ; NOTE: Update the source path to match your publish output directory
 Source: "bin\Release\net8.0-windows\win-x64\publish\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "app.ico"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't bundle Config.json - let the app create it on first run with defaults
 ; This way updates won't overwrite user's custom exclusion lists
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\app.ico"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Run]
@@ -51,6 +53,7 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 [UninstallDelete]
 ; Clean up config file on uninstall
 Type: files; Name: "{app}\Config.json"
+Type: files; Name: "{app}\app.ico"
 
 [Code]
 // ============================================================================
@@ -61,13 +64,13 @@ var
 
   // Checkbox arrays
   BrowserChecks: array[0..3] of TNewCheckBox;
-  EditorChecks: array[0..4] of TNewCheckBox;
+  EditorChecks: array[0..3] of TNewCheckBox;
   OfficeChecks: array[0..2] of TNewCheckBox;
   CommChecks: array[0..2] of TNewCheckBox;
 
   // Process name mappings
   BrowserProcesses: array[0..3] of String;
-  EditorProcesses: array[0..4] of String;
+  EditorProcesses: array[0..3] of String;
   OfficeProcesses: array[0..2] of String;
   CommProcesses: array[0..2] of String;
 
@@ -108,7 +111,7 @@ begin
   // Info text
   InfoLabel := TNewStaticText.Create(WizardForm);
   InfoLabel.Parent := CustomPage.Surface;
-  InfoLabel.Caption := 'Excluded Apps : Apps listed below already support this feature. Uncheck to replace their built-in functionality.';
+  InfoLabel.Caption := 'Excluded Apps: Apps listed below already support this feature. Uncheck to replace their built-in functionality.';
   InfoLabel.Left := ScaleX(0);
   InfoLabel.Top := ScaleY(0);
   InfoLabel.Width := CustomPage.SurfaceWidth;
@@ -118,7 +121,7 @@ begin
 
   CurrentTop := 35;
 
-  // Browsers Section
+  // ---- Browsers Section ----
   SectionLabel := TNewStaticText.Create(WizardForm);
   SectionLabel.Parent := CustomPage.Surface;
   SectionLabel.Caption := 'Browsers';
@@ -167,7 +170,7 @@ begin
   BrowserChecks[3].Checked := True;
   CurrentTop := CurrentTop + 28;
 
-  // Code Editors & IDEs Section
+  // ---- Code Editors & IDEs Section ----
   SectionLabel := TNewStaticText.Create(WizardForm);
   SectionLabel.Parent := CustomPage.Surface;
   SectionLabel.Caption := 'Code Editors & IDEs';
@@ -206,18 +209,92 @@ begin
   EditorChecks[2].Checked := True;
   CurrentTop := CurrentTop + 22;
 
-  EditorProcesses[4] := 'notepad++';
-  EditorChecks[4] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[4].Parent := CustomPage.Surface;
-  EditorChecks[4].Caption := 'Notepad++';
-  EditorChecks[4].Left := ScaleX(24);
-  EditorChecks[4].Top := ScaleY(CurrentTop);
-  EditorChecks[4].Width := CustomPage.SurfaceWidth - ScaleX(32);
-  EditorChecks[4].Checked := True;
+  EditorProcesses[3] := 'notepad++';
+  EditorChecks[3] := TNewCheckBox.Create(WizardForm);
+  EditorChecks[3].Parent := CustomPage.Surface;
+  EditorChecks[3].Caption := 'Notepad++';
+  EditorChecks[3].Left := ScaleX(24);
+  EditorChecks[3].Top := ScaleY(CurrentTop);
+  EditorChecks[3].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  EditorChecks[3].Checked := True;
   CurrentTop := CurrentTop + 28;
 
-  
-  
+  // ---- Office Apps Section ----
+  SectionLabel := TNewStaticText.Create(WizardForm);
+  SectionLabel.Parent := CustomPage.Surface;
+  SectionLabel.Caption := 'Office Apps';
+  SectionLabel.Left := ScaleX(8);
+  SectionLabel.Top := ScaleY(CurrentTop);
+  SectionLabel.Font.Style := [fsBold];
+  CurrentTop := CurrentTop + 20;
+
+  OfficeProcesses[0] := 'excel';
+  OfficeChecks[0] := TNewCheckBox.Create(WizardForm);
+  OfficeChecks[0].Parent := CustomPage.Surface;
+  OfficeChecks[0].Caption := 'Microsoft Excel';
+  OfficeChecks[0].Left := ScaleX(24);
+  OfficeChecks[0].Top := ScaleY(CurrentTop);
+  OfficeChecks[0].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  OfficeChecks[0].Checked := True;
+  CurrentTop := CurrentTop + 22;
+
+  OfficeProcesses[1] := 'winword';
+  OfficeChecks[1] := TNewCheckBox.Create(WizardForm);
+  OfficeChecks[1].Parent := CustomPage.Surface;
+  OfficeChecks[1].Caption := 'Microsoft Word';
+  OfficeChecks[1].Left := ScaleX(24);
+  OfficeChecks[1].Top := ScaleY(CurrentTop);
+  OfficeChecks[1].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  OfficeChecks[1].Checked := True;
+  CurrentTop := CurrentTop + 22;
+
+  OfficeProcesses[2] := 'outlook';
+  OfficeChecks[2] := TNewCheckBox.Create(WizardForm);
+  OfficeChecks[2].Parent := CustomPage.Surface;
+  OfficeChecks[2].Caption := 'Microsoft Outlook';
+  OfficeChecks[2].Left := ScaleX(24);
+  OfficeChecks[2].Top := ScaleY(CurrentTop);
+  OfficeChecks[2].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  OfficeChecks[2].Checked := True;
+  CurrentTop := CurrentTop + 28;
+
+  // ---- Communication Section ----
+  SectionLabel := TNewStaticText.Create(WizardForm);
+  SectionLabel.Parent := CustomPage.Surface;
+  SectionLabel.Caption := 'Communication';
+  SectionLabel.Left := ScaleX(8);
+  SectionLabel.Top := ScaleY(CurrentTop);
+  SectionLabel.Font.Style := [fsBold];
+  CurrentTop := CurrentTop + 20;
+
+  CommProcesses[0] := 'discord';
+  CommChecks[0] := TNewCheckBox.Create(WizardForm);
+  CommChecks[0].Parent := CustomPage.Surface;
+  CommChecks[0].Caption := 'Discord';
+  CommChecks[0].Left := ScaleX(24);
+  CommChecks[0].Top := ScaleY(CurrentTop);
+  CommChecks[0].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  CommChecks[0].Checked := True;
+  CurrentTop := CurrentTop + 22;
+
+  CommProcesses[1] := 'slack';
+  CommChecks[1] := TNewCheckBox.Create(WizardForm);
+  CommChecks[1].Parent := CustomPage.Surface;
+  CommChecks[1].Caption := 'Slack';
+  CommChecks[1].Left := ScaleX(24);
+  CommChecks[1].Top := ScaleY(CurrentTop);
+  CommChecks[1].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  CommChecks[1].Checked := True;
+  CurrentTop := CurrentTop + 22;
+
+  CommProcesses[2] := 'teams';
+  CommChecks[2] := TNewCheckBox.Create(WizardForm);
+  CommChecks[2].Parent := CustomPage.Surface;
+  CommChecks[2].Caption := 'Microsoft Teams';
+  CommChecks[2].Left := ScaleX(24);
+  CommChecks[2].Top := ScaleY(CurrentTop);
+  CommChecks[2].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  CommChecks[2].Checked := True;
 end;
 
 // ============================================================================
@@ -229,7 +306,7 @@ var
   Count, I: Integer;
 begin
   Count := 0;
-  SetArrayLength(Result, 15);  // Maximum possible
+  SetArrayLength(Result, 13);  // Maximum possible
 
   // Check browsers
   for I := 0 to 3 do
@@ -240,7 +317,7 @@ begin
     end;
 
   // Check editors
-  for I := 0 to 4 do
+  for I := 0 to 3 do
     if EditorChecks[I].Checked then
     begin
       Result[Count] := EditorProcesses[I];
@@ -269,21 +346,19 @@ end;
 
 function GetDefaultProcesses: TArrayOfString;
 begin
-  SetArrayLength(Result, 13);
+  SetArrayLength(Result, 12);
   Result[0] := 'vivaldi';
   Result[1] := 'opera';
-  Result[2] := 'webstorm';
-  Result[3] := 'intellij';
-  Result[4] := 'eclipse';
-  Result[5] := 'sublime_text';
-  Result[6] := 'atom';
-  Result[7] := 'explorer';
-  Result[8] := 'powerpnt';
-  Result[9] := 'cmd';
-  Result[10] := 'powershell';
-  Result[11] := 'slack';
-  Result[12] := 'spotify';
-  // Note: Excluding steam to keep default list at 13 apps as per plan
+  Result[2] := 'pycharm';
+  Result[3] := 'webstorm';
+  Result[4] := 'intellij';
+  Result[5] := 'eclipse';
+  Result[6] := 'sublime_text';
+  Result[7] := 'atom';
+  Result[8] := 'explorer';
+  Result[9] := 'powerpnt';
+  Result[10] := 'cmd';
+  Result[11] := 'powershell';
 end;
 
 // ============================================================================

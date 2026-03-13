@@ -9,3 +9,6 @@ obj/
 *.suo
 *.user
 *.cache
+
+# Generated assets
+app.png
