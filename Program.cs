@@ -20,12 +20,13 @@ else if (!config.AutoStartupEnabled && StartupManager.IsEnabled())
 var hook = new KeyboardHook(config);
 hook.Install();
 
-// Load custom icon from embedded resource or fall back to system icon
+// Load icon from embedded resource (works with single-file publish)
 Icon appIcon;
-var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
-if (File.Exists(iconPath))
+var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+using var iconStream = assembly.GetManifestResourceStream("BetterCtrlW.app.ico");
+if (iconStream != null)
 {
-    appIcon = new Icon(iconPath);
+    appIcon = new Icon(iconStream);
 }
 else
 {
