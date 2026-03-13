@@ -65,11 +65,11 @@ Type: files; Name: "{app}\app.ico"
 // ============================================================================
 var
   CustomPage: TWizardPage;
-  CheckListBox: TNewCheckListBox;
 
-  // Process name mappings (indexed to match CheckListBox item order)
-  ProcessNames: array[0..13] of String;
-  ProcessCount: Integer;
+  // Checkbox arrays
+  AppChecks: array[0..13] of TNewCheckBox;
+  AppProcesses: array[0..13] of String;
+  AppCount: Integer;
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -94,16 +94,38 @@ end;
 // UI CREATION FUNCTIONS
 // ============================================================================
 
-procedure AddItem(const AName, AProcess: String);
+procedure AddSection(const ACaption: String; var Y: Integer);
+var
+  Lbl: TNewStaticText;
 begin
-  CheckListBox.AddCheckBox(AName, '', 0, True, True, False, True, nil);
-  ProcessNames[ProcessCount] := AProcess;
-  ProcessCount := ProcessCount + 1;
+  Lbl := TNewStaticText.Create(WizardForm);
+  Lbl.Parent := CustomPage.Surface;
+  Lbl.Caption := ACaption;
+  Lbl.Left := ScaleX(4);
+  Lbl.Top := ScaleY(Y);
+  Lbl.Font.Style := [fsBold];
+  Y := Y + 15;
+end;
+
+procedure AddApp(const ACaption, AProcess: String; var Y: Integer);
+begin
+  AppChecks[AppCount] := TNewCheckBox.Create(WizardForm);
+  AppChecks[AppCount].Parent := CustomPage.Surface;
+  AppChecks[AppCount].Caption := ACaption;
+  AppChecks[AppCount].Left := ScaleX(20);
+  AppChecks[AppCount].Top := ScaleY(Y);
+  AppChecks[AppCount].Width := CustomPage.SurfaceWidth - ScaleX(28);
+  AppChecks[AppCount].Height := ScaleY(16);
+  AppChecks[AppCount].Checked := True;
+  AppProcesses[AppCount] := AProcess;
+  AppCount := AppCount + 1;
+  Y := Y + 16;
 end;
 
 procedure InitializeCustomPage;
 var
   InfoLabel: TNewStaticText;
+  Y: Integer;
 begin
   CustomPage := CreateCustomPage(
     wpSelectDir,
@@ -111,54 +133,42 @@ begin
     'Choose which applications should NOT close when you press Ctrl+W'
   );
 
-  // Info text
   InfoLabel := TNewStaticText.Create(WizardForm);
   InfoLabel.Parent := CustomPage.Surface;
-  InfoLabel.Caption := 'Excluded Apps: Apps listed below already support this feature. Uncheck to replace their built-in functionality.';
-  InfoLabel.Left := ScaleX(0);
-  InfoLabel.Top := ScaleY(0);
+  InfoLabel.Caption := 'Apps below already handle Ctrl+W. Uncheck to override.';
+  InfoLabel.Left := 0;
+  InfoLabel.Top := 0;
   InfoLabel.Width := CustomPage.SurfaceWidth;
-  InfoLabel.Height := ScaleY(28);
   InfoLabel.AutoSize := False;
   InfoLabel.WordWrap := True;
 
-  // Create check list box with native scrolling
-  CheckListBox := TNewCheckListBox.Create(WizardForm);
-  CheckListBox.Parent := CustomPage.Surface;
-  CheckListBox.Left := 0;
-  CheckListBox.Top := ScaleY(30);
-  CheckListBox.Width := CustomPage.SurfaceWidth;
-  CheckListBox.Height := CustomPage.SurfaceHeight - ScaleY(30);
-  CheckListBox.Flat := True;
-  CheckListBox.BorderStyle := bsNone;
+  AppCount := 0;
+  Y := 18;
 
-  ProcessCount := 0;
+  AddSection('Browsers', Y);
+  AddApp('Google Chrome', 'chrome', Y);
+  AddApp('Mozilla Firefox', 'firefox', Y);
+  AddApp('Microsoft Edge', 'msedge', Y);
+  AddApp('Brave Browser', 'brave', Y);
+  Y := Y + 4;
 
-  // Browsers
-  CheckListBox.AddGroup('Browsers', '', 0, nil);
-  AddItem('Google Chrome', 'chrome');
-  AddItem('Mozilla Firefox', 'firefox');
-  AddItem('Microsoft Edge', 'msedge');
-  AddItem('Brave Browser', 'brave');
+  AddSection('Code Editors && IDEs', Y);
+  AddApp('Visual Studio Code', 'code', Y);
+  AddApp('Visual Studio', 'devenv', Y);
+  AddApp('JetBrains Rider', 'rider', Y);
+  AddApp('Notepad++', 'notepad++', Y);
+  Y := Y + 4;
 
-  // Code Editors & IDEs
-  CheckListBox.AddGroup('Code Editors && IDEs', '', 0, nil);
-  AddItem('Visual Studio Code', 'code');
-  AddItem('Visual Studio', 'devenv');
-  AddItem('JetBrains Rider', 'rider');
-  AddItem('Notepad++', 'notepad++');
+  AddSection('Office Apps', Y);
+  AddApp('Microsoft Excel', 'excel', Y);
+  AddApp('Microsoft Word', 'winword', Y);
+  AddApp('Microsoft Outlook', 'outlook', Y);
+  Y := Y + 4;
 
-  // Office Apps
-  CheckListBox.AddGroup('Office Apps', '', 0, nil);
-  AddItem('Microsoft Excel', 'excel');
-  AddItem('Microsoft Word', 'winword');
-  AddItem('Microsoft Outlook', 'outlook');
-
-  // Communication
-  CheckListBox.AddGroup('Communication', '', 0, nil);
-  AddItem('Discord', 'discord');
-  AddItem('Slack', 'slack');
-  AddItem('Microsoft Teams', 'teams');
+  AddSection('Communication', Y);
+  AddApp('Discord', 'discord', Y);
+  AddApp('Slack', 'slack', Y);
+  AddApp('Microsoft Teams', 'teams', Y);
 end;
 
 // ============================================================================
@@ -167,23 +177,17 @@ end;
 
 function GetSelectedProcesses: TArrayOfString;
 var
-  Count, I, ProcIdx: Integer;
+  Count, I: Integer;
 begin
   Count := 0;
-  SetArrayLength(Result, ProcessCount);
-  ProcIdx := 0;
+  SetArrayLength(Result, AppCount);
 
-  for I := 0 to CheckListBox.Items.Count - 1 do
+  for I := 0 to AppCount - 1 do
   begin
-    // Skip group headers
-    if not CheckListBox.ItemIsGroup(I) then
+    if AppChecks[I].Checked then
     begin
-      if CheckListBox.Checked[I] then
-      begin
-        Result[Count] := ProcessNames[ProcIdx];
-        Count := Count + 1;
-      end;
-      ProcIdx := ProcIdx + 1;
+      Result[Count] := AppProcesses[I];
+      Count := Count + 1;
     end;
   end;
 
