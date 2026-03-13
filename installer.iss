@@ -65,6 +65,7 @@ Type: files; Name: "{app}\app.ico"
 // ============================================================================
 var
   CustomPage: TWizardPage;
+  ScrollBox: TScrollBox;
 
   // Checkbox arrays
   BrowserChecks: array[0..3] of TNewCheckBox;
@@ -105,6 +106,7 @@ procedure InitializeCustomPage;
 var
   InfoLabel, SectionLabel: TNewStaticText;
   CurrentTop: Integer;
+  ScrollWidth: Integer;
 begin
   CustomPage := CreateCustomPage(
     wpSelectDir,
@@ -112,13 +114,24 @@ begin
     'Choose which applications should NOT close when you press Ctrl+W'
   );
 
+  // Create scrollable container for all controls
+  ScrollBox := TScrollBox.Create(WizardForm);
+  ScrollBox.Parent := CustomPage.Surface;
+  ScrollBox.Left := 0;
+  ScrollBox.Top := 0;
+  ScrollBox.Width := CustomPage.SurfaceWidth;
+  ScrollBox.Height := CustomPage.SurfaceHeight;
+  ScrollBox.BorderStyle := bsNone;
+
+  ScrollWidth := ScrollBox.Width - ScaleX(20); // Account for scrollbar
+
   // Info text
   InfoLabel := TNewStaticText.Create(WizardForm);
-  InfoLabel.Parent := CustomPage.Surface;
+  InfoLabel.Parent := ScrollBox;
   InfoLabel.Caption := 'Excluded Apps: Apps listed below already support this feature. Uncheck to replace their built-in functionality.';
   InfoLabel.Left := ScaleX(0);
   InfoLabel.Top := ScaleY(0);
-  InfoLabel.Width := CustomPage.SurfaceWidth;
+  InfoLabel.Width := ScrollWidth;
   InfoLabel.Height := ScaleY(30);
   InfoLabel.AutoSize := False;
   InfoLabel.WordWrap := True;
@@ -127,7 +140,7 @@ begin
 
   // ---- Browsers Section ----
   SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := CustomPage.Surface;
+  SectionLabel.Parent := ScrollBox;
   SectionLabel.Caption := 'Browsers';
   SectionLabel.Left := ScaleX(8);
   SectionLabel.Top := ScaleY(CurrentTop);
@@ -136,47 +149,47 @@ begin
 
   BrowserProcesses[0] := 'chrome';
   BrowserChecks[0] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[0].Parent := CustomPage.Surface;
+  BrowserChecks[0].Parent := ScrollBox;
   BrowserChecks[0].Caption := 'Google Chrome';
   BrowserChecks[0].Left := ScaleX(24);
   BrowserChecks[0].Top := ScaleY(CurrentTop);
-  BrowserChecks[0].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  BrowserChecks[0].Width := ScrollWidth - ScaleX(32);
   BrowserChecks[0].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   BrowserProcesses[1] := 'firefox';
   BrowserChecks[1] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[1].Parent := CustomPage.Surface;
+  BrowserChecks[1].Parent := ScrollBox;
   BrowserChecks[1].Caption := 'Mozilla Firefox';
   BrowserChecks[1].Left := ScaleX(24);
   BrowserChecks[1].Top := ScaleY(CurrentTop);
-  BrowserChecks[1].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  BrowserChecks[1].Width := ScrollWidth - ScaleX(32);
   BrowserChecks[1].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   BrowserProcesses[2] := 'msedge';
   BrowserChecks[2] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[2].Parent := CustomPage.Surface;
+  BrowserChecks[2].Parent := ScrollBox;
   BrowserChecks[2].Caption := 'Microsoft Edge';
   BrowserChecks[2].Left := ScaleX(24);
   BrowserChecks[2].Top := ScaleY(CurrentTop);
-  BrowserChecks[2].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  BrowserChecks[2].Width := ScrollWidth - ScaleX(32);
   BrowserChecks[2].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   BrowserProcesses[3] := 'brave';
   BrowserChecks[3] := TNewCheckBox.Create(WizardForm);
-  BrowserChecks[3].Parent := CustomPage.Surface;
+  BrowserChecks[3].Parent := ScrollBox;
   BrowserChecks[3].Caption := 'Brave Browser';
   BrowserChecks[3].Left := ScaleX(24);
   BrowserChecks[3].Top := ScaleY(CurrentTop);
-  BrowserChecks[3].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  BrowserChecks[3].Width := ScrollWidth - ScaleX(32);
   BrowserChecks[3].Checked := True;
   CurrentTop := CurrentTop + 28;
 
   // ---- Code Editors & IDEs Section ----
   SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := CustomPage.Surface;
+  SectionLabel.Parent := ScrollBox;
   SectionLabel.Caption := 'Code Editors & IDEs';
   SectionLabel.Left := ScaleX(8);
   SectionLabel.Top := ScaleY(CurrentTop);
@@ -185,47 +198,47 @@ begin
 
   EditorProcesses[0] := 'code';
   EditorChecks[0] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[0].Parent := CustomPage.Surface;
+  EditorChecks[0].Parent := ScrollBox;
   EditorChecks[0].Caption := 'Visual Studio Code';
   EditorChecks[0].Left := ScaleX(24);
   EditorChecks[0].Top := ScaleY(CurrentTop);
-  EditorChecks[0].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  EditorChecks[0].Width := ScrollWidth - ScaleX(32);
   EditorChecks[0].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   EditorProcesses[1] := 'devenv';
   EditorChecks[1] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[1].Parent := CustomPage.Surface;
+  EditorChecks[1].Parent := ScrollBox;
   EditorChecks[1].Caption := 'Visual Studio';
   EditorChecks[1].Left := ScaleX(24);
   EditorChecks[1].Top := ScaleY(CurrentTop);
-  EditorChecks[1].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  EditorChecks[1].Width := ScrollWidth - ScaleX(32);
   EditorChecks[1].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   EditorProcesses[2] := 'rider';
   EditorChecks[2] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[2].Parent := CustomPage.Surface;
+  EditorChecks[2].Parent := ScrollBox;
   EditorChecks[2].Caption := 'JetBrains Rider';
   EditorChecks[2].Left := ScaleX(24);
   EditorChecks[2].Top := ScaleY(CurrentTop);
-  EditorChecks[2].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  EditorChecks[2].Width := ScrollWidth - ScaleX(32);
   EditorChecks[2].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   EditorProcesses[3] := 'notepad++';
   EditorChecks[3] := TNewCheckBox.Create(WizardForm);
-  EditorChecks[3].Parent := CustomPage.Surface;
+  EditorChecks[3].Parent := ScrollBox;
   EditorChecks[3].Caption := 'Notepad++';
   EditorChecks[3].Left := ScaleX(24);
   EditorChecks[3].Top := ScaleY(CurrentTop);
-  EditorChecks[3].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  EditorChecks[3].Width := ScrollWidth - ScaleX(32);
   EditorChecks[3].Checked := True;
   CurrentTop := CurrentTop + 28;
 
   // ---- Office Apps Section ----
   SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := CustomPage.Surface;
+  SectionLabel.Parent := ScrollBox;
   SectionLabel.Caption := 'Office Apps';
   SectionLabel.Left := ScaleX(8);
   SectionLabel.Top := ScaleY(CurrentTop);
@@ -234,37 +247,37 @@ begin
 
   OfficeProcesses[0] := 'excel';
   OfficeChecks[0] := TNewCheckBox.Create(WizardForm);
-  OfficeChecks[0].Parent := CustomPage.Surface;
+  OfficeChecks[0].Parent := ScrollBox;
   OfficeChecks[0].Caption := 'Microsoft Excel';
   OfficeChecks[0].Left := ScaleX(24);
   OfficeChecks[0].Top := ScaleY(CurrentTop);
-  OfficeChecks[0].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  OfficeChecks[0].Width := ScrollWidth - ScaleX(32);
   OfficeChecks[0].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   OfficeProcesses[1] := 'winword';
   OfficeChecks[1] := TNewCheckBox.Create(WizardForm);
-  OfficeChecks[1].Parent := CustomPage.Surface;
+  OfficeChecks[1].Parent := ScrollBox;
   OfficeChecks[1].Caption := 'Microsoft Word';
   OfficeChecks[1].Left := ScaleX(24);
   OfficeChecks[1].Top := ScaleY(CurrentTop);
-  OfficeChecks[1].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  OfficeChecks[1].Width := ScrollWidth - ScaleX(32);
   OfficeChecks[1].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   OfficeProcesses[2] := 'outlook';
   OfficeChecks[2] := TNewCheckBox.Create(WizardForm);
-  OfficeChecks[2].Parent := CustomPage.Surface;
+  OfficeChecks[2].Parent := ScrollBox;
   OfficeChecks[2].Caption := 'Microsoft Outlook';
   OfficeChecks[2].Left := ScaleX(24);
   OfficeChecks[2].Top := ScaleY(CurrentTop);
-  OfficeChecks[2].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  OfficeChecks[2].Width := ScrollWidth - ScaleX(32);
   OfficeChecks[2].Checked := True;
   CurrentTop := CurrentTop + 28;
 
   // ---- Communication Section ----
   SectionLabel := TNewStaticText.Create(WizardForm);
-  SectionLabel.Parent := CustomPage.Surface;
+  SectionLabel.Parent := ScrollBox;
   SectionLabel.Caption := 'Communication';
   SectionLabel.Left := ScaleX(8);
   SectionLabel.Top := ScaleY(CurrentTop);
@@ -273,31 +286,31 @@ begin
 
   CommProcesses[0] := 'discord';
   CommChecks[0] := TNewCheckBox.Create(WizardForm);
-  CommChecks[0].Parent := CustomPage.Surface;
+  CommChecks[0].Parent := ScrollBox;
   CommChecks[0].Caption := 'Discord';
   CommChecks[0].Left := ScaleX(24);
   CommChecks[0].Top := ScaleY(CurrentTop);
-  CommChecks[0].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  CommChecks[0].Width := ScrollWidth - ScaleX(32);
   CommChecks[0].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   CommProcesses[1] := 'slack';
   CommChecks[1] := TNewCheckBox.Create(WizardForm);
-  CommChecks[1].Parent := CustomPage.Surface;
+  CommChecks[1].Parent := ScrollBox;
   CommChecks[1].Caption := 'Slack';
   CommChecks[1].Left := ScaleX(24);
   CommChecks[1].Top := ScaleY(CurrentTop);
-  CommChecks[1].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  CommChecks[1].Width := ScrollWidth - ScaleX(32);
   CommChecks[1].Checked := True;
   CurrentTop := CurrentTop + 22;
 
   CommProcesses[2] := 'teams';
   CommChecks[2] := TNewCheckBox.Create(WizardForm);
-  CommChecks[2].Parent := CustomPage.Surface;
+  CommChecks[2].Parent := ScrollBox;
   CommChecks[2].Caption := 'Microsoft Teams';
   CommChecks[2].Left := ScaleX(24);
   CommChecks[2].Top := ScaleY(CurrentTop);
-  CommChecks[2].Width := CustomPage.SurfaceWidth - ScaleX(32);
+  CommChecks[2].Width := ScrollWidth - ScaleX(32);
   CommChecks[2].Checked := True;
 end;
 
